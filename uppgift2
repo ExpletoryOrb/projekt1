@@ -1,0 +1,72 @@
+package test;
+
+import java.math.BigInteger;
+import java.util.Random;
+
+public class rsa {
+
+	public static void main(String[] args){
+		  long start = System.currentTimeMillis();
+		  for(int i = 0; i < 1; i++){
+			 // System.out.println(isPrime()); 
+		  }
+		  long end = System.currentTimeMillis();
+		  System.out.println("Tidsåtgång: " + (end - start) + "ms");
+	}
+	
+	public static String isPrime() {
+		// input: n > 3, odd
+		// output: composite or ProbablyPrime
+
+
+		BigInteger zero = BigInteger.ZERO;
+		BigInteger one = BigInteger.ONE;
+		BigInteger two = new BigInteger("2");
+		BigInteger three = new BigInteger("3");
+		
+		BigInteger n = two.pow(512).subtract(one);
+
+		
+		if (n.compareTo(three) < 0) {
+			return "n: " + n + " is probably prime";
+		}
+		int r = 0;
+		BigInteger s = n.subtract(one);
+		while (s.mod(two).equals(zero)) {
+			s = s.divide(two);
+			r++;
+		}
+
+		for (int i = 0; i < 20; i++) {
+			BigInteger a = randomGenerator(two, n.subtract(two));
+			BigInteger x = a.modPow(s, n);
+
+			if (x.equals(one) || x.equals(n.subtract(one))) {
+				continue;
+			}
+
+			for (int j = 1; j < r - 1; j++) {
+				x = a.modPow(two, n);
+				if (x.equals(one)) {
+					return "n: " + n + " is composite";
+				} else if (x.equals(n.subtract(one))) {
+					return "n: " + n + " is probably prime";
+				}
+			}
+		}
+
+		return "n: " + n + " is composite";
+	}
+	
+	public static BigInteger randomGenerator(BigInteger low, BigInteger high) {
+		BigInteger res;
+		Random rand = new Random();
+		res = new BigInteger(high.bitLength(), rand);
+		//System.out.println("random: "+res);
+		while(res.compareTo(low) < 0 || res.compareTo(high) > 0){
+			res = new BigInteger(high.bitLength(), rand);
+			//System.out.println("Slumpar om: "+res);
+		}
+		return res;
+	}
+}
